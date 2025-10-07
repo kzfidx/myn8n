@@ -1,0 +1,147 @@
+{
+  "name": "Bark Push Module",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "=https://api.day.app/{{ $json.device_key }}/{{ $json.title }}/{{ $json.body }}",
+        "options": {}
+      },
+      "name": "Bark Push",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        -112
+      ],
+      "id": "8cd01521-6038-4ab2-890a-3b2e2c8d146e",
+      "alwaysOutputData": false,
+      "executeOnce": true,
+      "notesInFlow": true,
+      "retryOnFail": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 返回 JSON 对象\nreturn {\n  device_key: $env.BARK_DEVICE_KEY,\n  title: $json.title || 'HELLO',\n  body: $json.body || 'Hello World!'\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -224,
+        -112
+      ],
+      "id": "a394841f-10b1-48c9-9ea4-38d11f56bd54",
+      "name": "Bark Push content"
+    },
+    {
+      "parameters": {
+        "content": "## Bark Push模块\n输入body及tittle\n输出Bark Push通知",
+        "height": 320,
+        "width": 288
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -256,
+        -240
+      ],
+      "typeVersion": 1,
+      "id": "3eadf993-ce68-43b8-9fce-7bf28ab000c0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"body\": \"\",\n  \"title\": \"\"\n}"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        -112
+      ],
+      "id": "804bf5ec-047e-4791-84e4-709cf0ff857e",
+      "name": "When Executed by Another Workflow",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "fromEmail": "FILL_EMAIL_ADDRESS",
+        "toEmail": "FILL_EMAIL_ADDRESS",
+        "subject": "={{ $('Bark Push content').item.json.title }}",
+        "emailFormat": "text",
+        "text": "={{ $('Bark Push content').item.json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        -32
+      ],
+      "id": "cef3234b-760a-4b46-bb12-0dd9e736e2ab",
+      "name": "If Bark Fail then Send eMail",
+      "webhookId": "dc83f5ff-146c-4322-8aa1-fbfc7c14ddc9",
+      "credentials": {
+        "smtp": {
+          "id": "NHjPhBXVVfSZ1gbu",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Bark Push content": {
+      "main": [
+        [
+          {
+            "node": "Bark Push",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Bark Push content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bark Push": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If Bark Fail then Send eMail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "05d9a59b-01da-4853-bbfb-ef5630783fc2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8ee2cb0a80cbc5ee1f77aa601935ab6c269815b2d9d0bef02b4c90acd273e80"
+  },
+  "id": "rfyFyFWvWkvD8V59",
+  "tags": [
+    {
+      "createdAt": "2025-10-07T09:18:07.361Z",
+      "updatedAt": "2025-10-07T09:18:07.361Z",
+      "id": "LFy2xNxMYcRCrPEK",
+      "name": "Module"
+    }
+  ]
+}
